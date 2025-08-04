@@ -1,32 +1,50 @@
 pipeline {
     agent any
 
+    environment {
+        // Replace with your actual SonarQube server name configured in Jenkins
+        SONARQUBE_SERVER = 'SonarQubeServer'
+    }
+
     stages {
         stage('Checkout') {
             steps {
+                // Checkout code from GitHub
                 git url: 'https://github.com/Krish-Kash/sonar-test.git', branch: 'main'
             }
         }
 
-        stage('Build') {
+        stage('SonarQube Analysis') {
             steps {
-                echo 'Building the project...'
-                // Add build commands here
+                script {
+                    // Run SonarQube scanner for Python project
+                    def scannerHome = tool 'SonarQubeScanner'
+                    withSonarQubeEnv("${SONARQUBE_SERVER}") {
+                        sh "${scannerHome}/bin/sonar-scanner                             -Dsonar.projectKey=python_project                             -Dsonar.sources=.                             -Dsonar.language=py                             -Dsonar.python.version=3.8                             -Dsonar.sourceEncoding=UTF-8"
+                    }
+                }
             }
         }
 
-        stage('Test') {
+        stage('Quality Gate') {
             steps {
-                echo 'Running tests...'
-                // Add test commands here
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                echo 'Deploying...'
-                // Add deployment commands here
+                timeout(time: 1, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
             }
         }
     }
+
+    post {
+        always {
+            echo 'Pipeline execution completed.'
+        }
+        success {
+            echo 'SonarQube analysis passed.'
+        }
+        failure {
+            echo 'SonarQube analysis failed or quality gate not passed.'
+        }
+    }
 }
+
