@@ -20,7 +20,7 @@ pipeline {
                     // Run SonarQube scanner for Python project
                     def scannerHome = tool 'SonarQubeScanner'
                     withSonarQubeEnv("${SONARQUBE_SERVER}") {
-                        sh "${scannerHome}/bin/sonar-scanner                             -Dsonar.projectKey=python_project                             -Dsonar.sources=.                             -Dsonar.language=py                             -Dsonar.python.version=3.8                             -Dsonar.sourceEncoding=UTF-8"
+                        sh "${scannerHome}/bin/sonar-scanner                             -Dsonar.projectKey=sonar-test-project                            -Dsonar.sources=.                             -Dsonar.language=py                             -Dsonar.python.version=3.8                             -Dsonar.sourceEncoding=UTF-8"
                     }
                 }
             }
