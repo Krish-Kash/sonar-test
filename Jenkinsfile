@@ -2,49 +2,51 @@ pipeline {
     agent any
 
     environment {
-        // Replace with your actual SonarQube server name configured in Jenkins
-        SONARQUBE_SERVER = 'SonarQube Server'
+        // Define environment variables if needed
+        APP_NAME = 'SampleApp'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Checkout code from GitHub
-                git url: 'https://github.com/Krish-Kash/sonar-test.git', branch: 'main'
+                echo 'Checking out source code...'
+                checkout scm
             }
         }
 
-        stage('SonarQube Analysis') {
+        stage('Build') {
             steps {
-                script {
-                    // Run SonarQube scanner for Python project
-                    def scannerHome = tool 'SonarQubeScanner'
-                    withSonarQubeEnv("${SONARQUBE_SERVER}") {
-                        sh "${scannerHome}/bin/sonar-scanner                             -Dsonar.projectKey=sonar-test-project                            -Dsonar.sources=.                             -Dsonar.language=py                             -Dsonar.python.version=3.8                             -Dsonar.sourceEncoding=UTF-8"
-                    }
-                }
+                echo 'Building the application...'
+                // Replace with actual build command
+                sh './build.sh'
             }
         }
 
-        stage('Quality Gate') {
+        stage('Test') {
             steps {
-                timeout(time: 1, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
+                echo 'Running tests...'
+                // Replace with actual test command
+                sh './run-tests.sh'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying the application...'
+                // Replace with actual deploy command
+                sh './deploy.sh'
             }
         }
     }
 
     post {
-        always {
-            echo 'Pipeline execution completed.'
-        }
         success {
-            echo 'SonarQube analysis passed.'
+            echo 'Pipeline completed successfully!'
         }
         failure {
-            echo 'SonarQube analysis failed or quality gate not passed.'
+            echo 'Pipeline failed.'
         }
     }
 }
+
 
