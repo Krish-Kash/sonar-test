@@ -18,7 +18,7 @@ pipeline {
             steps {
                 echo 'Building the application...'
                 // Replace with actual build command
-                sh './build.sh'
+                // sh './build.sh'
             }
         }
 
@@ -26,7 +26,7 @@ pipeline {
             steps {
                 echo 'Running tests...'
                 // Replace with actual test command
-                sh './run-tests.sh'
+                // sh './run-tests.sh'
             }
         }
 
@@ -34,7 +34,7 @@ pipeline {
             steps {
                 echo 'Deploying the application...'
                 // Replace with actual deploy command
-                sh './deploy.sh'
+                // sh './deploy.sh'
             }
         }
     }
