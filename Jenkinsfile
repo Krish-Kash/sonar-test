@@ -4,6 +4,7 @@ pipeline {
     environment {
         // Define environment variables if needed
         APP_NAME = 'SampleApp'
+        Environment="Non-prod"
     }
 
     stages {
