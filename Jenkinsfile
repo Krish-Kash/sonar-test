@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Fetch Code') {
             steps {
-                git <your-github-repository>
+                git https://github.com/Krish-Kash/sonar-test.git
             }
         }
         stage('Code Analysis') {
@@ -15,10 +15,10 @@ pipeline {
                 script {
                     withSonarQubeEnv('Sonar') {
                         sh "${scannerHome}/bin/sonar-scanner \
-                            -Dsonar.projectKey=<project-key> \
-                            -Dsonar.projectName=<project-name> \
-                            -Dsonar.projectVersion=<project-version> \
-                            -Dsonar.sources=<project-path>"
+                            -Dsonar.projectKey=kkash6-test-project \
+                            -Dsonar.projectName=kkash6-test-project \
+                            -Dsonar.projectVersion=1.0 \
+                            -Dsonar.sources=."
                     }
                 }
             }
