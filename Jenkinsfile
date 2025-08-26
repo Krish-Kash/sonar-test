@@ -1,51 +1,27 @@
 pipeline {
     agent any
-
-    environment {
-        // Define environment variables if needed
-        APP_NAME = 'SampleApp'
-        Environment="Non-prod"
-    }
-
+    
     stages {
-        stage('Checkout') {
+        stage('Fetch Code') {
             steps {
-                echo 'Checking out source code...'
-                checkout scm
+                git <your-github-repository>
             }
         }
-
-        stage('Build') {
-            steps {
-                echo 'Building the application...'
-                // Replace with actual build command
-                // sh './build.sh'
+        stage('Code Analysis') {
+            environment {
+                scannerHome = tool 'Sonar'
             }
-        }
-
-        stage('Test') {
             steps {
-                echo 'Running tests...'
-                // Replace with actual test command
-                // sh './run-tests.sh'
+                script {
+                    withSonarQubeEnv('Sonar') {
+                        sh "${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.projectKey=<project-key> \
+                            -Dsonar.projectName=<project-name> \
+                            -Dsonar.projectVersion=<project-version> \
+                            -Dsonar.sources=<project-path>"
+                    }
+                }
             }
-        }
-
-        stage('Deploy') {
-            steps {
-                echo 'Deploying the application...'
-                // Replace with actual deploy command
-                // sh './deploy.sh'
-            }
-        }
-    }
-
-    post {
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed.'
         }
     }
 }
