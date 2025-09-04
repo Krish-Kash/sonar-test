@@ -1,27 +1,51 @@
 pipeline {
     agent any
-    
+
+    environment {
+        // Define environment variables
+        APP_NAME = 'MyApp'
+        BUILD_ENV = 'dev'
+    }
+
     stages {
-        stage('Fetch Code') {
+        stage('Checkout') {
             steps {
-                git https://github.com/Krish-Kash/sonar-test.git
+                echo 'Checking out source code...'
+                checkout scm
             }
         }
-        stage('Code Analysis') {
-            environment {
-                scannerHome = tool 'Sonar'
-            }
+
+        stage('Build') {
             steps {
-                script {
-                    withSonarQubeEnv('Sonar') {
-                        sh "${scannerHome}/bin/sonar-scanner \
-                            -Dsonar.projectKey=kkash6-test-project \
-                            -Dsonar.projectName=kkash6-test-project \
-                            -Dsonar.projectVersion=1.0 \
-                            -Dsonar.sources=."
-                    }
-                }
+                echo "Building ${APP_NAME} in ${BUILD_ENV} environment..."
+                // Example build command
+                sh './gradlew build'
             }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+                // Example test command
+                sh './gradlew test'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying application...'
+                // Example deploy command
+                sh './deploy.sh'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed.'
         }
     }
 }
